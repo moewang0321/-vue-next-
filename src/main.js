@@ -1,7 +1,8 @@
 import {
     reactive,
     watch,
-    computed
+    computed,
+    effect
 } from './reactivity'
 
 // ------------------------------------------------------------------------
@@ -64,11 +65,30 @@ import {
 
 // ---------------------------------------------------------------------
 
+// const test = reactive({
+//     a: 1,
+// });
+
+// const w = computed(() => test.a + 1);
+
+// console.log(w.value); // 2
+// test.a = 2;
+// console.log(w.value); // 3
+
+// --------------------------------------------------------------------
+
 const test = reactive({
     a: 1,
 });
 
 const w = computed(() => test.a + 1);
+
+watch(
+    () => test.a,
+    (val) => {
+        console.log(val); // 2
+    }
+);
 
 console.log(w.value); // 2
 test.a = 2;

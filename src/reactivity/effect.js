@@ -5,8 +5,28 @@ const targetMap = new WeakMap();
 export let activeEffect;
 
 // 设置当前回调函数
-export function setActiveEffect(effect) {
-    activeEffect = effect;
+// export function setActiveEffect(effect) {
+//     activeEffect = effect;
+// }
+
+export function effect(fn, options = {}) {
+    const effectFn = () => {
+        // 设置当前激活的回调函数
+        activeEffect = effectFn
+        // 执行fn 收集回调函数
+        let val = fn()
+
+        activeEffect = ''
+        return val
+    }
+
+    // option 配置
+    effectFn.options = options
+
+    if (!options.lazy) {
+        effectFn()
+    }
+    return effectFn
 }
 
 // 收集回调函数
@@ -37,7 +57,16 @@ export function trigger(target, key) {
         const deps = depsMap.get(key);
         if (deps) {
             // 触发回调函数
-            deps.forEach((v) => v());
+            // deps.forEach((v) => v());
+
+            deps.forEach((v) => {
+
+                if (v.options.schedular) {
+                    v.options.schedular()
+                } else if (v) {
+                    v()
+                }
+            })
         }
     }
 }
